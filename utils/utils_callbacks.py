@@ -18,14 +18,13 @@ class CallBackVerification(object):
         self.highest_acc_list: List[float] = [0.0] * len(val_targets)
         self.ver_list: List[object] = []
         self.ver_name_list: List[str] = []
-        if self.rank is 0:
+        if self.rank == 0:
             self.init_dataset(val_targets=val_targets, data_dir=rec_prefix, image_size=image_size)
 
     def ver_test(self, backbone: torch.nn.Module, global_step: int):
         results = []
         for i in range(len(self.ver_list)):
-            acc1, std1, acc2, std2, xnorm, embeddings_list = verification.test(
-                self.ver_list[i], backbone, 10, 10)
+            acc1, std1, acc2, std2, xnorm, embeddings_list = verification.test(self.ver_list[i], backbone, 10, 10)
             logging.info('[%s][%d]XNorm: %f' % (self.ver_name_list[i], global_step, xnorm))
             logging.info('[%s][%d]Accuracy-Flip: %1.5f+-%1.5f' % (self.ver_name_list[i], global_step, acc2, std2))
             if acc2 > self.highest_acc_list[i]:
@@ -43,7 +42,7 @@ class CallBackVerification(object):
                 self.ver_name_list.append(name)
 
     def __call__(self, num_update, backbone: torch.nn.Module):
-        if self.rank is 0 and num_update > 0 and num_update % self.frequent == 0:
+        if self.rank == 0 and num_update > 0 and num_update % self.frequent == 0:
             backbone.eval()
             self.ver_test(backbone, num_update)
             backbone.train()
@@ -63,7 +62,7 @@ class CallBackLogging(object):
         self.tic = 0
 
     def __call__(self, global_step, loss: AverageMeter, epoch: int, fp16: bool, grad_scaler: torch.cuda.amp.GradScaler):
-        if self.rank is 0 and global_step > 0 and global_step % self.frequent == 0:
+        if self.rank == 0 and global_step > 0 and global_step % self.frequent == 0:
             if self.init:
                 try:
                     speed: float = self.frequent * self.batch_size / (time.time() - self.tic)
@@ -95,12 +94,13 @@ class CallBackLogging(object):
 
 
 class CallBackModelCheckpoint(object):
-    def __init__(self, rank, output="./"):
+    def __init__(self, frequent, rank, output="./"):
+        self.frequent: int = frequent
         self.rank: int = rank
         self.output: str = output
 
     def __call__(self, global_step, backbone: torch.nn.Module, partial_fc: PartialFC = None):
-        if global_step > 100 and self.rank is 0:
+        if self.rank == 0 and global_step > 0 and global_step % self.frequent == 1:
             torch.save(backbone.module.state_dict(), os.path.join(self.output, "backbone.pth"))
-        if global_step > 100 and partial_fc is not None:
+        if global_step > 0 and global_step % self.frequent == 1 and partial_fc is not None:
             partial_fc.save_params()

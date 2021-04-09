@@ -1,0 +1,22 @@
+# mount -t tmpfs -o size=40G  tmpfs /train_tmp
+cp -r ms1m-retinaface-t2/ /train_tmp/
+export OMP_NUM_THREADS=4
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python -m torch.distributed.launch --nproc_per_node=8 --nnodes=1 --node_rank=0 --master_addr="127.0.0.1" --master_port=1234 train.py
+ps -ef | grep "train" | grep -v grep | awk '{print "kill -9 "$2}' | sh
+
+
+多头attention
+
+r50, bs=400
+3201.70 samples/sec   12h
+Training: 2021-04-07 22:26:55,400-Total Step is: 39856
+
+
+t2t_vit  2个版本, 跑通了. 需要查看细节.
+t2t.py  训练需要85h.
+
+
+cvt
+
+
+
