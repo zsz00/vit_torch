@@ -11,12 +11,14 @@ r50, bs=400
 3201.70 samples/sec   12h
 Training: 2021-04-07 22:26:55,400-Total Step is: 39856
 
+test acc都是 0.5
 
-t2t_vit  2个版本, 跑通了. 需要查看细节.
-t2t.py  训练需要85h.
+t2t_vit 结果正常了. 100h
+t2t.py
+训练需要: kernel_size:7->5   85h->25h
+cvt     14h  test acc 不对.
 
 
-cvt
 
 
 
