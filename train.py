@@ -6,6 +6,7 @@ import torch.distributed as dist
 import torch.nn.functional as F
 import torch.utils.data.distributed
 from torch.nn.utils import clip_grad_norm_
+from torchsummary import summary
 
 import backbones
 from backbones.vit_pytorch.t2t import T2TViT
@@ -53,7 +54,7 @@ def main(args):
         # backbone = backbones.t2t_vit.T2T_ViT(
         #     tokens_type='face', num_classes=512, embed_dim=768, depth=10, num_heads=6, mlp_ratio=3,
         #     drop_path_rate=0, drop_rate=0.1)
-        backbone = T2TViT(image_size=112, num_classes=512, dim=384, depth=5, heads=4, mlp_dim=512)
+        backbone = T2TViT(image_size=112, num_classes=512, dim=384, depth=10, heads=6, mlp_dim=512, dropout=0.1, emb_dropout=0.1)
     elif name_network == "face_vit":
         backbone = backbones.face_vit.Face_ViT()
     elif name_network == "cvt":
@@ -62,7 +63,7 @@ def main(args):
         backbone = backbones.vit_baseline()
     else:
         raise NotImplementedError("{} is not implemented!".format(name_network))
-
+    summary(backbone.cuda(), input_size=(3, 112, 112), batch_size=-1)
     if args.resume:   # 继续训练
         try:
             backbone_pth = os.path.join(cfg.output, "backbone.pth")
@@ -99,7 +100,7 @@ def main(args):
     if rank == 0: logging.info(f"num_epoch:{cfg.num_epoch}, total step is: {total_step}, "
                                f"step/epoch:{int(len(trainset) / cfg.batch_size/world_size)}")
 
-    callback_verification = CallBackVerification(300, rank, cfg.val_targets, cfg.rec)
+    callback_verification = CallBackVerification(500, rank, cfg.val_targets, cfg.rec)
     callback_logging = CallBackLogging(50, rank, total_step, cfg.batch_size, world_size, None)
     callback_checkpoint = CallBackModelCheckpoint(1000, rank, cfg.output)
 
