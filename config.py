@@ -7,12 +7,13 @@ config.sample_rate = 1
 config.fp16 = False
 config.momentum = 0.9
 config.weight_decay = 5e-4
-config.batch_size = 700  # 400
-config.lr = 0.01  # batch size is 512
+config.batch_size = 600  # 400
+config.lr = 0.1  # batch size is 512
 config.output = "checkpoints"
 
-# config.opt1 = edict()
-# config.opt1.epochs = 60
+config.opt1 = edict()
+config.opt1.epochs = 25
+
 # config.opt1.opt = 'adamw'
 # config.opt1.opt_eps = 1e-8
 # config.opt1.opt_betas = None
@@ -20,28 +21,29 @@ config.output = "checkpoints"
 # config.opt1.momentum = 0.9
 # config.opt1.weight_decay = 0.05
 # config.opt1.sched = 'step'
-# #config.sched = 'step'
-# lr_mult = 1.0
-# config.opt1.lr = 1e-3 * lr_mult
-# config.opt1.lr_noise = None
-# config.opt1.lr_noise_pct = 0.67
-# config.opt1.lr_noise_std = 1.0
-# config.opt1.warmup_lr = 5e-5 * lr_mult
-# config.opt1.min_lr = 1e-5 * lr_mult
-# config.opt1.decay_epochs = 6
-# config.opt1.warmup_epochs = 6
-# config.opt1.cooldown_epochs = 2
-# config.opt1.patience_epochs = 2
-# config.opt1.decay_rate = 0.1
-#
-# config.opt1.opt = 'sgd'
-# config.opt1.sched = 'step'
-# config.opt1.lr = 0.01
-# config.opt1.warmup_lr = config.opt1.lr * 0.1
-# config.opt1.min_lr = config.opt1.lr * 0.0001
-# config.opt1.decay_epochs = 15
-# config.opt1.weight_decay = 0.0001
-# config.opt2 = config.opt1.copy()
+lr_mult = 1.0
+config.opt1.lr = 1e-3 * lr_mult
+config.opt1.lr_noise = None
+config.opt1.lr_noise_pct = 0.67
+config.opt1.lr_noise_std = 1.0
+config.opt1.warmup_lr = 5e-5 * lr_mult
+config.opt1.min_lr = 1e-5 * lr_mult
+config.opt1.decay_epochs = 6
+config.opt1.warmup_epochs = 6
+config.opt1.cooldown_epochs = 2
+config.opt1.patience_epochs = 2
+config.opt1.decay_rate = 0.1
+
+config.opt1.opt = 'sgd'
+config.opt1.sched = 'step'
+config.opt1.lr = 0.01
+config.opt1.warmup_lr = config.opt1.lr * 0.1
+config.opt1.min_lr = config.opt1.lr * 0.0001
+config.opt1.momentum = 0.9
+config.opt1.decay_epochs = 15
+config.opt1.weight_decay = 0.0001
+
+config.opt2 = config.opt1.copy()
 
 if config.dataset == "emore":
     config.rec = "/train_tmp/faces_emore"

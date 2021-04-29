@@ -446,8 +446,7 @@ for file in files:
 
 methods = np.array(methods)
 scores = dict(zip(methods, scores))
-colours = dict(
-    zip(methods, sample_colours_from_colourmap(methods.shape[0], 'Set2')))
+colours = dict(zip(methods, sample_colours_from_colourmap(methods.shape[0], 'Set2')))
 x_labels = [10 ** -6, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2, 10 ** -1]
 tpr_fpr_table = PrettyTable(['Methods'] + [str(x) for x in x_labels])
 fig = plt.figure()

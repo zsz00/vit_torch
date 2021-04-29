@@ -4,19 +4,23 @@ export OMP_NUM_THREADS=4
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python -m torch.distributed.launch --nproc_per_node=8 --nnodes=1 --node_rank=0 --master_addr="127.0.0.1" --master_port=1234 train.py
 ps -ef | grep "train" | grep -v grep | awk '{print "kill -9 "$2}' | sh
 
+vit, input: face-frame, task: frame classify
 
-多头attention
+r50, lr=0.1, bs=400   3201.70 samples/sec   12h
+t2t_vit    100h
+t2t.py   训练需要: kernel_size:7->5   85h->25h
+cvt     15h   ls=0.1->0.01 后好了.
 
-r50, bs=400
-3201.70 samples/sec   12h
-Training: 2021-04-07 22:26:55,400-Total Step is: 39856
+这3个vit可以正常训练, 但是结果不够好.
 
-test acc都是 0.5
+怎么调参数
+怎么通过log看loss曲线
+怎么画roc
 
-t2t_vit 结果正常了. 100h
-t2t.py
-训练需要: kernel_size:7->5   85h->25h
-cvt     14h  test acc 不对.
+
+vit, input: face-frame-stream, task: video classify --> frame classify
+Kinetics-400
+
 
 
 
